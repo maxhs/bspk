@@ -1,62 +1,56 @@
-<div class="space-y-8 p-20 w-full divide-y divide-gray-200 shadow sm:rounded-md sm:overflow-hidden">
+<div id="edit-campaign-<%= @campaign.id %>" class="space-y-8 p-20 w-full divide-y divide-gray-200 shadow sm:rounded-md sm:overflow-hidden">
   <div class="mt-5 md:mt-0 md:col-span-2">
     <div>
       <h3 class="text-lg leading-6 font-medium text-gray-900">Your campaign</h3>
       <p class="mt-1 text-sm text-gray-500">Basic campaign information</p>
     </div>
     
-    <%= form_with model: @campaign do |f| %>
       <div class="">
-        <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
-          <div class="grid grid-cols-3 gap-6">
-            <div class="col-span-3 sm:col-span-2">
-              <%= f.label :title, "Title", class: "block text-sm font-medium text-gray-700" %>
-              <div class="mt-1 flex rounded-md shadow-sm">
+        <div class="py-5 bg-white space-y-6">
+          <div class="">
+            <%= form_with model: @campaign, class:"sm:max-w-lg sm:w-full sm:flex" do |f| %>
+              <div class="min-w-0 flex-1">
+                <%= f.label :title, "Title", class: "block text-sm font-medium text-gray-700" %>
                 <%= f.text_field :title, class: "focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300", placeholder: "A title for your campaign" %>
               </div>
-            </div>
+              <div class="mt-4">
+                <%= f.submit "Save", class:"cursor-pointer block w-full rounded-md border border-transparent px-5 py-2 mt-1 ml-5 bg-rose-500 text-sm font-medium text-white shadow hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2" %>
+              </div>
+            <% end %>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700">Training sets</label>
-            <div class="training_sets">
-              <% @campaign.training_sets.each do |training_set| %>
-                <div>
-                  <div class="float-left">
-                    <span><%= link_to training_set.filename, training_set.url %></span>
-                    <span><%= link_to "Train", train_campaign_path(training_set.signed_id), data: {turbo_method: :post}, remote: true %></span>
+            <label class="block text-sm font-medium text-gray-700">Training files</label>
+            <div class="training_files">
+              <ul role="list" id="training-list" class="divide-y divide-gray-200">
+                <%= render partial:"trainings/train", collection: @campaign.trainings, as: :training %>
+              </ul>
+            </div>
+
+            <div class="clear-both mt-1 flex pt-5 pb-6">
+              <%= form_with model: Training.new do |f| %>
+                <%= f.hidden_field :campaign_id, value: @campaign.id %>
+                <div class="space-y-1">
+                  <div class="text-sm text-gray-600">
+                    <label for="training_file" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                      <span>Select a file</span>
+                      <%= f.file_field :file, class:"sr-only ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+                    </label>
+                    <%= f.submit "Upload", class:"cursor-pointer justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
                   </div>
-                  <div class="float-right">
-                    <span><%= button_to 'Remove', delete_training_set_campaign_path(training_set.signed_id, campaign_id: @campaign.id), method: :delete, form: {data: {turbo_confirm: 'Are you sure?'}} %></span>
-                    <span><%= time_ago_in_words training_set.created_at %></span> 
-                  </div>
+                  
                 </div>
               <% end %>
             </div>
-            <div class="clear-both mb-1 mt-1 prose prose-sm sm:prose lg:prose-lg prose-primary">
+            
+            <p class="text-xs text-gray-500">Train your model by uploading a new set of text prompts and answers. Must be a .jsonl file (sample below).</p>
+            <div class="clear-both mt-1 prose max-w-full prose-primary">
               <pre>
                 <code class="language-json">
-                {"prompt": "<prompt text>", "completion": "<ideal generated text>"}
-                {"prompt": "<prompt text>", "completion": "<ideal generated text>"}
-                {"prompt": "<prompt text>", "completion": "<ideal generated text>"}
+                {"prompt": "Tell me about ice cream", "completion": "It's sweet, creamy, and delicious"}
+                {"prompt": "...", "completion": "..."}
+                {"prompt": "...", "completion": "..."}
               </code></pre>
-            </div>
-              
-            </code>
-            <div class="clear-both mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-              <div class="space-y-1 text-center">
-                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                <div class="flex text-sm text-gray-600 justify-center">
-                  <label for="campaign_training_sets" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                    <span>Upload a file</span>
-                    <%= f.file_field :training_sets, multiple: true, direct_upload: true, class:"sr-only ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
-                  </label>
-                  <!--<p class="pl-1">or drag and drop</p>-->
-                </div>
-                <p class="text-xs text-gray-500">A .json file up to 10MB</p>
-              </div>
             </div>
           </div>
       
@@ -64,29 +58,30 @@
         <div class="pt-5">
           <div class="flex justify-end">
             <button type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Cancel</button>
-            <%= f.submit action_name == 'edit' ? "Update" : "Save", class:"cursor-pointer ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+            
           </div>
         </div>
       </div>
-    <% end %>
 
-    <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
-      <%= form_with url: prompt_campaign_path(@campaign), remote: true do |f| %>
-        <div class="">
-          <div class="grid grid-cols-3 gap-6">
-            <div class="col-span-3 sm:col-span-2">
-              <%= f.label :prompt, "Prompt", class: "block text-sm font-medium text-gray-700" %>
-              <div class="mt-1 flex rounded-md shadow-sm">
-                <%= f.text_area :prompt, rows: 3, class: "focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300", placeholder: "Prompt a text response" %>
+    <% if @campaign.persisted? %>
+      <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+        <%= form_with url: prompt_campaign_path(@campaign), remote: true do |f| %>
+          <div class="">
+            <div class="grid grid-cols-3 gap-6">
+              <div class="col-span-3 sm:col-span-2">
+                <%= f.label :prompt, "Prompt", class: "block text-sm font-medium text-gray-700" %>
+                <div class="mt-1 flex rounded-md shadow-sm">
+                  <%= f.text_area :prompt, rows: 3, class: "focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300", placeholder: "Prompt a text response" %>
+                </div>
               </div>
             </div>
+          <div class="flex justify-end">
+            <%= f.submit "Submit", class:"cursor-pointer ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
           </div>
-        <div class="flex justify-end">
-          <%= f.submit "Submit", class:"cursor-pointer ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" %>
-        </div>
-      <% end %>  
-      <%= render partial:"campaigns/prompt" %>
-    </div>
+        <% end %>  
+        <%= render partial:"campaigns/prompt" %>
+      </div>
+    <% end %>
   </div>
 </div>
 

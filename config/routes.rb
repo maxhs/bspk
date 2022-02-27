@@ -3,9 +3,12 @@ Rails.application.routes.draw do
   root to: "home#index"
   resources :campaigns do
     member do
-      delete :delete_training_set
-      post :train
       post :prompt
+    end
+  end
+  resources :trainings do
+    member do
+      post :train
     end
   end
 end

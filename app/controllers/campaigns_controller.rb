@@ -25,28 +25,14 @@ class CampaignsController < ApplicationController
 	def update
 		find_campaign
 		@campaign.update campaign_params
-		return redirect_to edit_campaign_path(@campaign) unless @campaign
 	end
 
 	def destroy
 		@campaign.destroy
-	end
-
-	def train
-		training_set = ActiveStorage::Blob.find_signed(params[:id])
-		OpenAiService.train(training_set) if training_set
-	end
+	end	
 
 	def prompt
-		@prompt = OpenAiService.new.prompt(prompt_params[:params])
-		p "prompt response: #{@prompt}"
-	end
-
-	def remove_training_set
-		@campaign = Campaign.find_by(id: params[:campaign_id])
-		training_set = ActiveStorage::Blob.find_signed(params[:id])
-  	training_set.purge
-	  redirect_to edit_campaign_path(@campaign)
+		@prompt = OpenAiService.new.prompt(prompt_params[:prompt])
 	end
 
 	private
