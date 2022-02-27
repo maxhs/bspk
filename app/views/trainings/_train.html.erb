@@ -1,0 +1,24 @@
+<li id="training-<%= training.id %>">
+  <div class="py-4">
+    <div class="flex items-center justify-between">
+      <p class="text-sm font-medium text-indigo-600 truncate"><%= link_to training.file.filename, training.file.url %></p>
+      <p class="text-sm font-medium text-gray-400">
+        <time datetime="<%= training.created_at.to_date %>">Posted <%= time_ago_in_words training.created_at %></time>
+        <time datetime="<%= training.updated_at.to_date %>">Last trained <%= time_ago_in_words training.updated_at %></time>
+      </p>
+    </div>
+    
+    <div class="mt-2 sm:flex sm:justify-between">
+      <div class="sm:flex">
+        <p class="flex items-center text-sm text-blue-800">
+          <%= link_to "Train", train_training_path(training), data: {turbo_method: :post}, remote: true if training.uploaded_file_id.present? %>
+        </p>
+      </div>
+      <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+        <p class="ml-2 flex-shrink-0 flex text-red-800">
+          <%= link_to 'Remove', training_path(training, campaign_id: training.campaign_id), method: :delete, data: {turbo_method: :delete, turbo_confirm: 'Are you sure?'} %>
+        </p>
+      </div>
+    </div>
+  </div>
+</li>

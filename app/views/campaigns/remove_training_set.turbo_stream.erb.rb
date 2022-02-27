@@ -1,0 +1,1 @@
+<%= turbo_stream.remove "training-set-#{@training_set_id}" %>
