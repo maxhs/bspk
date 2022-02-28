@@ -7,7 +7,6 @@ class OpenAiService
 	def upload
 		@training.file.open do |tempfile|
 			response = client.files.upload(parameters: { file: tempfile, purpose: 'fine-tune' })
-			p "train response: #{response.inspect}"
 	    @training.update(
 	    	uploaded_file_id: JSON.parse(response.body)["id"],
 	    	uploaded_at: Time.current
