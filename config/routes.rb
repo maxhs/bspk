@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
   root to: "home#index"
-  resources :campaigns do
+  resources :projects do
     member do
       post :prompt
     end

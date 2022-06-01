@@ -1,7 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  campaign: one
+  project: one
 
 two:
-  campaign: two
+  project: two

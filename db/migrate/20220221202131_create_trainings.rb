@@ -1,7 +1,7 @@
 class CreateTrainings < ActiveRecord::Migration[7.0]
   def change
     create_table :trainings do |t|
-      t.references :campaign
+      t.references :project
       t.datetime :uploaded_at
       t.datetime :trained_at
       t.text :uploaded_file_id

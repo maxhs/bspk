@@ -28,6 +28,6 @@ class TrainingsController < ApplicationController
 	end
 
 	def training_params
-		params.require(:training).permit(:campaign_id, :file)
+		params.require(:training).permit(:project_id, :file)
 	end
 end

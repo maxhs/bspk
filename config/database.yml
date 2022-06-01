@@ -7,13 +7,13 @@ default: &default
 
 development:
   <<: *default
-  database: brstlcn_development
+  database: bspk_development
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
   # When left blank, postgres will use the default role. This is
   # the same name as the operating system user running Rails.
-  #username: brstlcn
+  #username: bspk
 
   # The password associated with the postgres role (username).
   #password:
@@ -41,7 +41,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: brstlcn_test
+  database: bspk_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -65,6 +65,6 @@ test:
 #
 production:
   <<: *default
-  database: brstlcn_production
-  username: brstlcn
-  password: <%= ENV["BRSTLCN_DATABASE_PASSWORD"] %>
+  database: bspk_production
+  username: bspk
+  password: <%= ENV["bspk_DATABASE_PASSWORD"] %>
